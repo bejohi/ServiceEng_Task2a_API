@@ -35,7 +35,7 @@ public interface IVocManager {
      * @param user user the owner of the card.
      * @param card the card to add to the database.
      */
-    void postCard(IUser user, RequestCard card);
+    void updateCard(IUser user, long id, RequestCard card);
 
     /**
      * Deletes the card with the given ID in case the user is authorized for the operation.

@@ -23,7 +23,7 @@ public class AuthController {
         this.authManager = authManager;
     }
 
-    @PutMapping("/addUser")
+    @PutMapping("/user")
     public ResponseEntity<String> addUser(@RequestParam("userName") String userName){
         Optional<String> apiKeyOptional = this.authManager.addUser(userName);
         return apiKeyOptional

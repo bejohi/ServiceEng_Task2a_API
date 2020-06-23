@@ -31,7 +31,7 @@ public class VocController {
      * @param apiKey the API-key to identify the current user.
      * @return a list of all cards which are stored for the given user.
      */
-    @GetMapping("/allCards")
+    @GetMapping("/cards")
     public ResponseEntity<List<ResponseCard>> getAllCardsForUser(@RequestParam(value="apikey") String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         return ResponseEntity.ok(this.vocManager.getAllCardsForUser(user));
@@ -55,9 +55,9 @@ public class VocController {
      * @param card the card to put into the database.
      * @return a message of the success or failure of the put operation.
      */
-    @PutMapping("/putCard")
+    @PutMapping("/cards")
     public ResponseEntity<String> putCard(@RequestBody RequestCard card,
-                                          @RequestParam(value = "apiKey",required = false) String apiKey){
+                                          @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         this.vocManager.putCard(user,card);
         return ResponseEntity.ok("Card successfully added.");
@@ -69,11 +69,12 @@ public class VocController {
      * @param card the card which should be changend by the request.
      * @return a message of the success or failure of the put operation.
      */
-    @PostMapping("/postCard")
-    public ResponseEntity<String> postCard(@RequestBody RequestCard card,
-                                          @RequestParam(value = "apiKey",required = false) String apiKey){
+    @PostMapping("/cards/{cardID}")
+    public ResponseEntity<String> postCard(@PathVariable long cardID,
+                                           @RequestBody RequestCard card,
+                                           @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
-        this.vocManager.postCard(user,card);
+        this.vocManager.updateCard(user,id, card);
         return ResponseEntity.ok("Card successfully changend.");
     }
 
@@ -83,9 +84,9 @@ public class VocController {
      * @param cardId the unique ID of the card to delete.
      * @return a message of the success or failure of the put operation.
      */
-    @DeleteMapping("/deleteCard")
-    public ResponseEntity<String> deleteCard(@RequestParam(value = "cardId",required = false) long cardId,
-                                           @RequestParam(value = "apiKey",required = false) String apiKey){
+    @DeleteMapping("/cards/{cardID}")
+    public ResponseEntity<String> deleteCard(@PathVariable long cardId,
+                                             @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         this.vocManager.deleteCard(user,cardId);
         return ResponseEntity.ok("Card successfully deleted");
@@ -97,9 +98,10 @@ public class VocController {
      * @param moveCard an object with all necessary information to move the card from one level to another.
      * @return a message of the success or failure of the put operation.
      */
-    @PostMapping("/moveCard")
-    public ResponseEntity<String> moveCard(@RequestBody RequestMoveCard moveCard,
-                                             @RequestParam(value = "apiKey",required = false) String apiKey){
+    @PatchMapping("/cards/{cardID}")
+    public ResponseEntity<String> moveCard(@PathVariable long cardID,
+                                           @RequestBody RequestMoveCard moveCard,
+                                           @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         this.vocManager.moveCard(user,moveCard);
         return ResponseEntity.ok("Level of card successfully changed.");

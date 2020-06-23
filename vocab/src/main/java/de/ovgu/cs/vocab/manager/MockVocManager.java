@@ -41,7 +41,7 @@ public class MockVocManager implements IVocManager{
     }
 
     @Override
-    public void postCard(IUser user, RequestCard card) {
+    public void updateCard(IUser user, long id, RequestCard card) {
         this.putCard(user,card);
     }
 
