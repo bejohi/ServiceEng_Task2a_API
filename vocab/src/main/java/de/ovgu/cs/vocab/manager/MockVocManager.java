@@ -2,6 +2,7 @@ package de.ovgu.cs.vocab.manager;
 
 import de.ovgu.cs.vocab.model.IUser;
 import de.ovgu.cs.vocab.model.RequestCard;
+import de.ovgu.cs.vocab.model.RequestMoveCard;
 import de.ovgu.cs.vocab.model.ResponseCard;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +38,20 @@ public class MockVocManager implements IVocManager{
     @Override
     public void putCard(IUser user, RequestCard card) {
         cards.add(new ResponseCard("What is 1 + 7","8",0,idCounter++));
+    }
+
+    @Override
+    public void postCard(IUser user, RequestCard card) {
+        this.putCard(user,card);
+    }
+
+    @Override
+    public void deleteCard(IUser user, long cardId) {
+        //TODO: Implement
+    }
+
+    @Override
+    public void moveCard(IUser user, RequestMoveCard moveCard) {
+        //TODO: Implement
     }
 }

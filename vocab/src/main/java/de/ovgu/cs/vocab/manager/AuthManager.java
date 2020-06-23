@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @Service
 public class AuthManager implements IAuthManager{
 
@@ -29,5 +31,10 @@ public class AuthManager implements IAuthManager{
         }
         log.info("User " + user.getUsername() + " authorized.");
         return user;
+    }
+
+    @Override
+    public Optional<String> addUser(String userName) {
+        return Optional.of("Not implemented!"); // TODO: Implement
     }
 }

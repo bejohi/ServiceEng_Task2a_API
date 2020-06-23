@@ -2,6 +2,7 @@ package de.ovgu.cs.vocab.manager;
 
 import de.ovgu.cs.vocab.model.IUser;
 import de.ovgu.cs.vocab.model.RequestCard;
+import de.ovgu.cs.vocab.model.RequestMoveCard;
 import de.ovgu.cs.vocab.model.ResponseCard;
 
 import java.util.List;
@@ -23,9 +24,30 @@ public interface IVocManager {
     ResponseCard getNextCardForUser(IUser user);
 
     /**
-     *
+     * Creates a new card and stores it in the system.
      * @param user user the owner of the new card.
      * @param card the card to add to the database.
      */
     void putCard(IUser user, RequestCard card);
+
+    /**
+     * Changes the values of a given card (must already be stored with the given ID).
+     * @param user user the owner of the card.
+     * @param card the card to add to the database.
+     */
+    void postCard(IUser user, RequestCard card);
+
+    /**
+     * Deletes the card with the given ID in case the user is authorized for the operation.
+     * @param user user the owner of the card.
+     * @param cardId the unique ID of the card to delete.
+     */
+    void deleteCard(IUser user, long cardId);
+
+    /**
+     * Moves a card with a given ID from one level to anothe.
+     * @param user user the owner of the card.
+     * @param moveCard an object which holds all necessary information.
+     */
+    void moveCard(IUser user, RequestMoveCard moveCard);
 }

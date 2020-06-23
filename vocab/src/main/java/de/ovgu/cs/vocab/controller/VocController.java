@@ -2,6 +2,7 @@ package de.ovgu.cs.vocab.controller;
 
 import de.ovgu.cs.vocab.manager.IAuthManager;
 import de.ovgu.cs.vocab.manager.IVocManager;
+import de.ovgu.cs.vocab.model.RequestMoveCard;
 import de.ovgu.cs.vocab.model.IUser;
 import de.ovgu.cs.vocab.model.RequestCard;
 import de.ovgu.cs.vocab.model.ResponseCard;
@@ -49,7 +50,7 @@ public class VocController {
     }
 
     /**
-     *
+     * Creates a new card.
      * @param apiKey the API-key to identify the current user.
      * @param card the card to put into the database.
      * @return a message of the success or failure of the put operation.
@@ -60,5 +61,47 @@ public class VocController {
         IUser user = this.authManager.authenticate(apiKey);
         this.vocManager.putCard(user,card);
         return ResponseEntity.ok("Card successfully added.");
+    }
+
+    /**
+     * Changes values of the card with the given value.
+     * @param apiKey the API-key to identify the current user.
+     * @param card the card which should be changend by the request.
+     * @return a message of the success or failure of the put operation.
+     */
+    @PostMapping("/postCard")
+    public ResponseEntity<String> postCard(@RequestBody RequestCard card,
+                                          @RequestParam(value = "apiKey",required = false) String apiKey){
+        IUser user = this.authManager.authenticate(apiKey);
+        this.vocManager.postCard(user,card);
+        return ResponseEntity.ok("Card successfully changend.");
+    }
+
+    /**
+     * Deletes the card with the given value, in case the user is authorized.
+     * @param apiKey the API-key to identify the current user.
+     * @param cardId the unique ID of the card to delete.
+     * @return a message of the success or failure of the put operation.
+     */
+    @DeleteMapping("/deleteCard")
+    public ResponseEntity<String> deleteCard(@RequestParam(value = "cardId",required = false) long cardId,
+                                           @RequestParam(value = "apiKey",required = false) String apiKey){
+        IUser user = this.authManager.authenticate(apiKey);
+        this.vocManager.deleteCard(user,cardId);
+        return ResponseEntity.ok("Card successfully deleted");
+    }
+
+    /**
+     * Moves the given card to another level
+     * @param apiKey the API-key to identify the current user.
+     * @param moveCard an object with all necessary information to move the card from one level to another.
+     * @return a message of the success or failure of the put operation.
+     */
+    @PostMapping("/moveCard")
+    public ResponseEntity<String> moveCard(@RequestBody RequestMoveCard moveCard,
+                                             @RequestParam(value = "apiKey",required = false) String apiKey){
+        IUser user = this.authManager.authenticate(apiKey);
+        this.vocManager.moveCard(user,moveCard);
+        return ResponseEntity.ok("Level of card successfully changed.");
     }
 }
