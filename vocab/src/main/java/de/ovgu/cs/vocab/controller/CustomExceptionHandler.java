@@ -1,5 +1,7 @@
 package de.ovgu.cs.vocab.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,9 +16,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private Logger log = LoggerFactory.getLogger(CustomExceptionHandler.class);
+
+
     @ExceptionHandler(value = { Exception.class})
     protected ResponseEntity<String> handleConflict(
             RuntimeException ex, WebRequest request) {
+        log.warn(ex.getMessage());
         if(ex instanceof ResponseStatusException){
             ResponseStatusException respEx = (ResponseStatusException) ex;
             return ResponseEntity.status(respEx.getStatus()).body(respEx.getMessage());

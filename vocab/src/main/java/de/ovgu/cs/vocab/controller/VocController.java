@@ -41,7 +41,7 @@ public class VocController {
      * @param apiKey the API-key to identify the current user.
      * @return a randomly selected next card to test for the user.
      */
-    @GetMapping("nextCard")
+    @GetMapping("/nextCard")
     public ResponseEntity<ResponseCard> getNextCard(@RequestParam(value="apikey") String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         ResponseCard card = this.vocManager.getNextCardForUser(user);
@@ -54,8 +54,9 @@ public class VocController {
      * @param card the card to put into the database.
      * @return a message of the success or failure of the put operation.
      */
-    @PutMapping("putCard")
-    public ResponseEntity<String> putCard(@RequestParam(value="apikey") String apiKey, @RequestBody RequestCard card){
+    @PutMapping("/putCard")
+    public ResponseEntity<String> putCard(@RequestBody RequestCard card,
+                                          @RequestParam(value = "apiKey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         this.vocManager.putCard(user,card);
         return ResponseEntity.ok("Card successfully added.");
