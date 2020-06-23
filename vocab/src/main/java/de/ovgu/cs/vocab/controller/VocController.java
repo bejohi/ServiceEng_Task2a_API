@@ -74,7 +74,7 @@ public class VocController {
                                            @RequestBody RequestCard card,
                                            @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
-        this.vocManager.updateCard(user,id, card);
+        this.vocManager.updateCard(user,cardID, card);
         return ResponseEntity.ok("Card successfully changend.");
     }
 
