@@ -43,7 +43,7 @@ public class AuthManager implements IAuthManager{
     @Override
     public Optional<String> addUser(String userName) {
         if(userName == null || userName.isEmpty()){
-            log.warn("Empty username transmited");
+            log.warn("Empty username transmitted");
             return Optional.empty();
         }
 
@@ -56,7 +56,7 @@ public class AuthManager implements IAuthManager{
         DbUser newUser = new DbUser();
         newUser.setUsername(userName);
         newUser.setApiKey(apiKey);
-        newUser = this.userRepository.save(newUser);
+        newUser = this.userRepository.saveAndFlush(newUser);
 
         if(newUser.getId() == 0){
             log.warn("Storing new user failed.");

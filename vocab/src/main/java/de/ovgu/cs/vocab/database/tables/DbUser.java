@@ -19,7 +19,7 @@ public class DbUser {
     @Column(unique = true)
     private String username;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private Set<DbCard> cards;
 
     public long getId() {

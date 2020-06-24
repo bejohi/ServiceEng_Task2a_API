@@ -2,10 +2,7 @@ package de.ovgu.cs.vocab.controller;
 
 import de.ovgu.cs.vocab.manager.IAuthManager;
 import de.ovgu.cs.vocab.manager.IVocManager;
-import de.ovgu.cs.vocab.model.RequestMoveCard;
-import de.ovgu.cs.vocab.model.IUser;
-import de.ovgu.cs.vocab.model.RequestCard;
-import de.ovgu.cs.vocab.model.ResponseCard;
+import de.ovgu.cs.vocab.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,12 +67,12 @@ public class VocController {
      * @return a message of the success or failure of the put operation.
      */
     @PostMapping("/cards/{cardId}")
-    public ResponseEntity<String> postCard(@PathVariable long cardId,
-                                           @RequestBody RequestCard card,
-                                           @RequestParam(value = "apikey",required = false) String apiKey){
+    public ResponseEntity<GenericResponse> postCard(@PathVariable long cardId,
+                                                    @RequestBody RequestCard card,
+                                                    @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         this.vocManager.updateCard(user,cardId, card);
-        return ResponseEntity.ok("Card successfully changend.");
+        return ResponseEntity.ok(GenericResponse.ok("Card successfully changed."));
     }
 
     /**
@@ -85,11 +82,11 @@ public class VocController {
      * @return a message of the success or failure of the put operation.
      */
     @DeleteMapping("/cards/{cardId}")
-    public ResponseEntity<String> deleteCard(@PathVariable long cardId,
+    public ResponseEntity<GenericResponse> deleteCard(@PathVariable long cardId,
                                              @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         this.vocManager.deleteCard(user,cardId);
-        return ResponseEntity.ok("Card successfully deleted");
+        return ResponseEntity.ok(GenericResponse.ok("Card successfully deleted"));
     }
 
     /**
@@ -99,11 +96,11 @@ public class VocController {
      * @return a message of the success or failure of the put operation.
      */
     @PatchMapping("/cards/{cardId}")
-    public ResponseEntity<String> moveCard(@PathVariable long cardId,
+    public ResponseEntity<GenericResponse> moveCard(@PathVariable long cardId,
                                            @RequestBody RequestMoveCard moveCard,
                                            @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
         this.vocManager.moveCard(user,moveCard);
-        return ResponseEntity.ok("Level of card successfully changed.");
+        return ResponseEntity.ok(GenericResponse.ok("Level of card successfully changed."));
     }
 }

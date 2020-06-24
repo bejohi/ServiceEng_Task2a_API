@@ -1,6 +1,7 @@
 package de.ovgu.cs.vocab.controller;
 
 import de.ovgu.cs.vocab.manager.IAuthManager;
+import de.ovgu.cs.vocab.model.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,14 @@ public class AuthController {
     }
 
     @PutMapping("/user")
-    public ResponseEntity<String> addUser(@RequestParam("userName") String userName){
+    public ResponseEntity<GenericResponse> addUser(@RequestParam("userName") String userName){
         Optional<String> apiKeyOptional = this.authManager.addUser(userName);
-        return apiKeyOptional
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("A user with the same username was already registered in the system."));
+        if(!apiKeyOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new GenericResponse(false,
+                            "A user with the same username was already registered in the system."));
+        }
+        return ResponseEntity.ok(new GenericResponse(true,apiKeyOptional.get()));
     }
 
 }
