@@ -69,12 +69,12 @@ public class VocController {
      * @param card the card which should be changend by the request.
      * @return a message of the success or failure of the put operation.
      */
-    @PostMapping("/cards/{cardID}")
-    public ResponseEntity<String> postCard(@PathVariable long cardID,
+    @PostMapping("/cards/{cardId}")
+    public ResponseEntity<String> postCard(@PathVariable long cardId,
                                            @RequestBody RequestCard card,
                                            @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
-        this.vocManager.updateCard(user,cardID, card);
+        this.vocManager.updateCard(user,cardId, card);
         return ResponseEntity.ok("Card successfully changend.");
     }
 
@@ -84,7 +84,7 @@ public class VocController {
      * @param cardId the unique ID of the card to delete.
      * @return a message of the success or failure of the put operation.
      */
-    @DeleteMapping("/cards/{cardID}")
+    @DeleteMapping("/cards/{cardId}")
     public ResponseEntity<String> deleteCard(@PathVariable long cardId,
                                              @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
@@ -98,8 +98,8 @@ public class VocController {
      * @param moveCard an object with all necessary information to move the card from one level to another.
      * @return a message of the success or failure of the put operation.
      */
-    @PatchMapping("/cards/{cardID}")
-    public ResponseEntity<String> moveCard(@PathVariable long cardID,
+    @PatchMapping("/cards/{cardId}")
+    public ResponseEntity<String> moveCard(@PathVariable long cardId,
                                            @RequestBody RequestMoveCard moveCard,
                                            @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);

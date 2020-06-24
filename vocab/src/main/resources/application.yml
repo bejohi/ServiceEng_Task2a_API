@@ -1,0 +1,10 @@
+
+# Database config
+spring.datasource.username: vocUser
+spring.datasource.password: ca98d13un
+spring.jpa.generate-ddl: true
+spring.datasource.url: jdbc:postgresql://localhost/vocabDb
+spring.datasource.driver-class-name: org.postgresql.Driver
+
+# only for development
+spring.jpa.hibernate.ddl-auto: create-drop

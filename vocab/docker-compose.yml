@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  postgres-dev:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: vocUser
+      POSTGRES_PASSWORD: ca98d13un
+      POSTGRES_DB: vocabDb
+    volumes:
+      - ~/vocabDatabase:/var/lib/postgresql
+    ports:
+      - "5432:5432" # Map default port to the outside.
