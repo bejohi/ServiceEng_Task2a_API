@@ -45,9 +45,7 @@ public interface IVocManager {
     void deleteCard(IUser user, long cardId);
 
     /**
-     * Moves a card with a given ID from one level to anothe.
-     * @param user user the owner of the card.
-     * @param moveCard an object which holds all necessary information.
+     * Moves a card with a given ID from one level to another.
      */
-    void moveCard(IUser user, RequestMoveCard moveCard);
+    void moveCard(IUser user, int newLevel, long cardId);
 }

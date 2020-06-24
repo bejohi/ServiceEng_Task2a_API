@@ -15,7 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +27,7 @@ public class VocManager implements IVocManager{
     private final IUserRepository userRepository;
     private final ICardRepository cardRepository;
 
-    private Logger log = LoggerFactory.getLogger(VocManager.class);
+    private final Logger log = LoggerFactory.getLogger(VocManager.class);
 
     @Autowired
     public VocManager(IUserRepository userRepository, ICardRepository cardRepository) {
@@ -43,7 +46,15 @@ public class VocManager implements IVocManager{
 
     @Override
     public ResponseCard getNextCardForUser(IUser user) {
-        return null;
+        DbUser dbUser = this.getDbUser(user);
+        List<DbCard> cards = new ArrayList<>(dbUser.getCards());
+        if(cards.size() == 0){
+            return new ResponseCard("","",0,0);
+        }
+        int index = ThreadLocalRandom.current().nextInt(0, cards.size());
+        DbCard selectedCard = cards.get(index);
+        return new ResponseCard(selectedCard.getQuestion(),selectedCard.getAnswer(),
+                selectedCard.getLevel(),selectedCard.getId());
     }
 
     @Override
@@ -62,26 +73,52 @@ public class VocManager implements IVocManager{
     }
 
     @Override
-    public void updateCard(IUser user, long id, RequestCard card) {
-
+    public void updateCard(IUser user, long cardId, RequestCard card) {
+        DbCard dbCard = this.getCardIfUserIsAuthorized(user,cardId);
+        dbCard.setLevel(card.getLevel());
+        dbCard.setQuestion(card.getQuestion());
+        dbCard.setAnswer(card.getAnswer());
+        this.cardRepository.saveAndFlush(dbCard);
     }
 
     @Override
     public void deleteCard(IUser user, long cardId) {
-
+        DbCard dbCard = this.getCardIfUserIsAuthorized(user,cardId);
+        this.cardRepository.delete(dbCard);
     }
 
     @Override
-    public void moveCard(IUser user, RequestMoveCard moveCard) {
+    public void moveCard(IUser user, int newLevel, long cardId){
+        DbCard dbCard = this.getCardIfUserIsAuthorized(user,cardId);
+        dbCard.setLevel(newLevel);
+        this.cardRepository.saveAndFlush(dbCard);
+    }
 
+    /**
+     * Checks that the given user is present in the database and authorized for the card with the given ID.
+     * In case no card is found for the given ID an exception is thrown.
+     */
+    public DbCard getCardIfUserIsAuthorized(IUser user,long cardId){
+        Optional<DbCard> dbCardOptional = this.cardRepository.findById(cardId);
+        DbUser dbUser = this.getDbUser(user);
+        if(!dbCardOptional.isPresent()) {
+            log.warn("No card with id " + cardId + " found");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        DbCard dbCard = dbCardOptional.get();
+        if(dbCard.getUser().getId() != dbUser.getId()){
+            log.warn("User " + dbUser.getId() + "not authorized for card " + cardId);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        return dbCard;
     }
 
     private DbUser getDbUser(IUser userIn){
-        List<DbUser> users = this.userRepository.findByApiKey(userIn.getApiKey());
-        if(users.size() != 1){
+        Optional<DbUser> dbUserOptional = this.userRepository.findByApiKey(userIn.getApiKey());
+        if(!dbUserOptional.isPresent()){
             log.error("A user was not found. That's bad.");
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return users.get(0);
+        return dbUserOptional.get();
     }
 }

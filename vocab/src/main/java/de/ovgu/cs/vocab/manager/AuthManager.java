@@ -1,6 +1,5 @@
 package de.ovgu.cs.vocab.manager;
 
-import de.ovgu.cs.vocab.database.IUserRepo;
 import de.ovgu.cs.vocab.database.repositories.IUserRepository;
 import de.ovgu.cs.vocab.database.tables.DbUser;
 import de.ovgu.cs.vocab.model.IUser;
@@ -19,24 +18,22 @@ import java.util.UUID;
 @Service
 public class AuthManager implements IAuthManager{
 
-    private final IUserRepo userRepo;
     private final IUserRepository userRepository;
     private Logger log = LoggerFactory.getLogger(AuthManager.class);
 
     @Autowired
-    public AuthManager(IUserRepo userRepo, IUserRepository userRepository) {
-        this.userRepo = userRepo;
+    public AuthManager(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public IUser authenticate(String apiKey) {
-        List<DbUser> userList = this.userRepository.findByApiKey(apiKey);
-        if(userList.size() < 1){
+        Optional<DbUser> userOpt = this.userRepository.findByApiKey(apiKey);
+        if(!userOpt.isPresent()){
             log.warn("User with key " + apiKey + " NOT authorized/ found in DB");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        DbUser dbUser = userList.get(0);
+        DbUser dbUser = userOpt.get();
         return new User(dbUser.getUsername(),dbUser.getApiKey());
     }
 
@@ -47,8 +44,8 @@ public class AuthManager implements IAuthManager{
             return Optional.empty();
         }
 
-        List<DbUser> userList = this.userRepository.findByUsername(userName);
-        if(userList.size() != 0){
+        Optional<DbUser> userOptional = this.userRepository.findByUsername(userName);
+        if(userOptional.isPresent()){
             log.warn("User with username " + userName + " was already stored in the database");
             return Optional.empty();
         }

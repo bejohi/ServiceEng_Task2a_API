@@ -92,15 +92,14 @@ public class VocController {
     /**
      * Moves the given card to another level
      * @param apiKey the API-key to identify the current user.
-     * @param moveCard an object with all necessary information to move the card from one level to another.
      * @return a message of the success or failure of the put operation.
      */
     @PatchMapping("/cards/{cardId}")
     public ResponseEntity<GenericResponse> moveCard(@PathVariable long cardId,
-                                           @RequestBody RequestMoveCard moveCard,
+                                                    @RequestParam(value = "newLevel",required = false) int newLevel,
                                            @RequestParam(value = "apikey",required = false) String apiKey){
         IUser user = this.authManager.authenticate(apiKey);
-        this.vocManager.moveCard(user,moveCard);
+        this.vocManager.moveCard(user,newLevel,cardId);
         return ResponseEntity.ok(GenericResponse.ok("Level of card successfully changed."));
     }
 }
