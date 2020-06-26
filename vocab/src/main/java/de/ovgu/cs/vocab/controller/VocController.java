@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * The main controller for the public available vocabulary card API endpoints.
  */
+@CrossOrigin("*")
 @RestController
 public class VocController {
 
