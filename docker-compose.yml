@@ -12,7 +12,7 @@ services:
       - ./volumes/vocabDatabase:/var/lib/postgresql
     ports: ["5432:5432"]
 
-  vocab-api:
+  api:
     image: zottelchin/vocab-api
     build: ./vocab
     restart: unless-stopped
@@ -23,3 +23,12 @@ services:
       DB_NAME: vocabDb
       DB_PORT: 5432
     ports: ["8080:8080"]
+
+  client:
+    image: zottelchin/vocab-client
+    build: ./vocab-frontend
+    restart: unless-stopped
+    ports: ["1234:80"]
+    environment: 
+      HOST: api:8080
+      PROTOCOL: http

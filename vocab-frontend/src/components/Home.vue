@@ -62,7 +62,7 @@ export default {
             this.$router.push("/cards")
         },
         async register() {
-            let r = await fetch("http://localhost:8080/user?userName=" + encodeURIComponent(this.username), {
+            let r = await fetch("/api/user?userName=" + encodeURIComponent(this.username), {
                 method: 'PUT'
             })
             this.response = await r.json()

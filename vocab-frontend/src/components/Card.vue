@@ -1,8 +1,11 @@
 <template>
     <div>
-        <h3 class="title is-3 has-text-centered">
-            Erstelle eine weitere Frage:
-        </h3>
+        <div class="level">
+            <h2 class="has-text-weight-bold is-size-4">Deine Fragen</h2>
+            <div class="level-right">
+                <router-link to="/cards" class="button is-info">Zurück</router-link>
+            </div>
+        </div>
 
         <article class="message is-success" v-show="res">
             <div class="message-body">
@@ -73,7 +76,7 @@ export default {
     methods: {
         async save() {
             this.res = this.err = ""
-            let r = await fetch("http://localhost:8080/cards?apikey="+ encodeURIComponent(this.$parent.apikey()), {
+            let r = await fetch("/api/cards?apikey="+ encodeURIComponent(this.$parent.apikey()), {
                 method: 'PUT',
                     headers: {
                     'Content-Type': 'application/json'

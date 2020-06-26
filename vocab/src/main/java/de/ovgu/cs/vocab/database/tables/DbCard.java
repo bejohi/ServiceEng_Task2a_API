@@ -12,8 +12,10 @@ public class DbCard {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(columnDefinition="TEXT")
     private String question;
 
+    @Column(columnDefinition="TEXT")
     private String answer;
 
     @ManyToOne
