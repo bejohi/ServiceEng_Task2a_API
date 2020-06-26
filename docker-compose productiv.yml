@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vocUser
+      POSTGRES_PASSWORD: ca98d13un
+      POSTGRES_DB: vocabDb
+    volumes:
+      - ./database:/var/lib/postgresql
+
+  api:
+    image: zottelchin/vocab-api
+    restart: unless-stopped
+    environment:
+      DB_URL: db
+      DB_USER: vocUser
+      DB_PASS: ca98d13un
+      DB_NAME: vocabDb
+      DB_PORT: 5432
+    ports: ["8080:8080"]
+
+  client:
+    image: zottelchin/vocab-client
+    restart: unless-stopped
+    ports: ["1234:80"]
+    environment: 
+      HOST: api:8080
+      PROTOCOL: http
