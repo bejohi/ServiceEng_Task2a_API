@@ -1,9 +1,9 @@
 
 # Database config
-spring.datasource.username: vocUser
-spring.datasource.password: ca98d13un
+spring.datasource.username: ${DB_USER}
+spring.datasource.password: ${DB_PASS}
 spring.jpa.generate-ddl: true
-spring.datasource.url: jdbc:postgresql://localhost/vocabDb
+spring.datasource.url: jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_NAME}
 spring.datasource.driver-class-name: org.postgresql.Driver
 
 # only for development

@@ -40,6 +40,11 @@ export default {
     apikey() {
       return localStorage.getItem("apikey")
     }
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem("apikey")
+    }
   }
 };
 </script>
