@@ -4,10 +4,10 @@
         Vocab
       </h1>
     <router-view class="container"></router-view>
-    <hr>
-    <div class="field is-grouped">
+    <hr v-if="apikey()">
+    <div class="field is-grouped" v-if="apikey()">
       <div class="control">
-        Du bist eingelogged als <i>{{ apikey }}</i> -
+        Du bist eingelogged als <i>{{ apikey() }}</i> -
         <a @click="logout">Ausloggen</a>
       </div>
     </div>
@@ -30,20 +30,19 @@ const router = new VueRouter({
     { path: "/", component: Home },
     { path: "/test", component: Test },
     { path: "/cards", component: Cards },
-    { path: "/cards/:id", component: Card }
+    { path: "/cards/new", component: Card }
   ]
 });
 
 export default {
   router,
-  computed: {
-    apikey() {
-      return localStorage.getItem("apikey")
-    }
-  },
   methods: {
+    apikey() {
+      return localStorage.getItem("apikey") ? localStorage.getItem("apikey") : ""
+    },
     logout() {
-      localStorage.removeItem("apikey")
+      localStorage.removeItem("apikey");
+      router.push("/")
     }
   }
 };
