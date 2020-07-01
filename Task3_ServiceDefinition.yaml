@@ -1,0 +1,237 @@
+swagger: "2.0"
+info:
+  description: "This is an API Server for the management of a vocabulary card system"
+  version: "1.0"
+  title: "Vocab"
+  #termsOfService: "http://swagger.io/terms/"
+  #contact:
+  #  email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "api.vocab.zottelchin.de"
+#basePath: "/v3"
+#tags:
+#- name: "pet"
+#  description: "Everything about your Pets"
+#  externalDocs:
+#    description: "Find out more"
+#    url: "http://swagger.io"
+#- name: "store"
+#  description: "Access to Petstore orders"
+#- name: "user"
+#  description: "Operations about user"
+#  externalDocs:
+#    description: "Find out more about our store"
+#    url: "http://swagger.io"
+schemes:
+- "https"
+paths:
+  /cards:
+    get:
+      tags:
+      - "cards"
+      summary: "Get a list of all cards a user owns."
+      description: "The system will find all cards which are related to the user with the given API-key and returns it."
+      operationId: "getAllCards"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "query"
+          name: "apikey"
+          type: "string"
+          description: "The API-key of a registered user"
+      responses:
+        "401":
+          description: "No user with the given API-key was found."
+    put:
+      tags:
+      - "cards"
+      summary: "Creates a new card."
+      description: "Creates a new card in the system with the given parameter."
+      operationId: "createCard"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "query"
+          name: "apikey"
+          type: "string"
+          description: "The API-key of a registered user"
+        - in: "body"
+          name: "body"
+          description: "Card objects which should be add to the database"
+          required: true
+          schema:
+            $ref: "#/definitions/RequestCard"
+      responses:
+        "200":
+          description: "Everythink works and the card is added to the database"
+        "400":
+          description: "For some reason was it not possible to add the card to the database"
+        "401":
+          description: "No user with the given API-key was found."
+  /cards/{cardId}:
+    post:
+        tags:
+        - "cards"
+        summary: "updates a card with the given id"
+        description: "Updates question, answer and level of the card with the given id"
+        operationId: "updateCard"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+          - in: "query"
+            name: "apikey"
+            type: "string"
+            description: "The API-key of a registered user"
+          - in: "body"
+            name: "body"
+            description: "Card objects which should be add to the database"
+            required: true
+            schema:
+              $ref: '#/definitions/RequestCardWithoutId'
+          - name: "cardId"
+            in: "path"
+            description: "The unique id of the card which should be processed and is already stored in the database"
+            required: true
+            type: "integer"
+        responses:
+          "200":
+            description: "Everythink works and the card was updated"
+          "400":
+            description: "For some reason was it not possible to change the card, e.g. because the related element was not found in the database."
+          "401":
+            description: "No user with the given API-key was found."
+    delete:
+        tags:
+        - "cards"
+        summary: "deletes a card with the given id from the database."
+        description: "The card with the given id is deleted from the database in case the user is authorized for it."
+        operationId: "deleteCard"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+          - in: "query"
+            name: "apikey"
+            type: "string"
+            description: "The API-key of a registered user"
+          - name: "cardId"
+            in: "path"
+            description: "The unique id of the card which should be processed and is already stored in the database"
+            required: true
+            type: "integer"
+        responses:
+          "200":
+            description: "Everythink works and the card was updated"
+          "400":
+            description: "For some reason was it not possible to delete the card, e.g. because the related element was not found in the database."
+          "401":
+            description: "No user with the given API-key was found."
+    patch:
+        tags:
+        - "cards"
+        summary: "Move the card to the given level."
+        description: "The card with the given id is moved to the specified level."
+        operationId: "moveCard"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+          - in: "query"
+            name: "apikey"
+            type: "string"
+            description: "The API-key of a registered user"
+          - name: "cardId"
+            in: "path"
+            description: "The unique id of the card which should be processed and is already stored in the database"
+            required: true
+            type: "integer"
+          - name: "newLevel"
+            in: "query"
+            description: "The level to move the card to."
+            required: true
+            type: "integer"
+        responses:
+          "200":
+            description: "Everythink works and the card was updated"
+          "400":
+            description: "For some reason was it not possible to delete the card, e.g. because the related element was not found in the database."
+          "401":
+            description: "No user with the given API-key was found."
+  /nextCard:
+     get:
+        tags:
+        - "cards"
+        summary: "Get a randomly seletected card."
+        description: "Returns a randomly seletect card from all card the user with the given API-key owns."
+        operationId: "getNextCards"
+        consumes:
+        - "application/json"
+        produces:
+        - "application/json"
+        parameters:
+          - in: "query"
+            name: "apikey"
+            type: "string"
+            description: "The API-key of a registered user"
+        responses:
+          "200":
+            description: "Everythink works and a card is returned"
+            schema: 
+              $ref: "#/definitions/RequestCard"
+          "401":
+            description: "No user with the given API-key was found."
+  /user:
+    put:
+      tags:
+      - "user"
+      summary: "Add a new user to the system."
+      description: "Stores the user in the database, creates and API-key for it and returns the key"
+      operationId: "addNewUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "query"
+          name: "username"
+          type: "string"
+          description: "The user to add to the system"
+      responses:
+        "200":
+          description: "The user was added and the api key is returned."
+        "401":
+          description: "No user with the given API-key was found."
+definitions:
+  RequestCard:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      question:
+        type: "string"
+      answer:
+        type: "string"
+      level:
+        type: "integer"
+        format: "int64"
+  RequestCardWithoutId:
+    type: "object"
+    properties:
+      question:
+        type: "string"
+      answer:
+        type: "string"
+      level:
+        type: "integer"
+        format: "int64"
